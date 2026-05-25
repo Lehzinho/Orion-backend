@@ -1,0 +1,17 @@
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Infra.deps.json
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Infra.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Infra.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Application.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Domain.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Application.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\bin\Debug\net9.0\OrionPOS.Domain.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.csproj.AssemblyReference.cache
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.AssemblyInfoInputs.cache
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.AssemblyInfo.cs
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.csproj.CoreCompileInputs.cache
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.92D9D3EE.Up2Date
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\refint\OrionPOS.Infra.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\OrionPOS.Infra.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Infra\obj\Debug\net9.0\ref\OrionPOS.Infra.dll

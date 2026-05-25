@@ -1,0 +1,11 @@
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\bin\Debug\net9.0\OrionPOS.Domain.deps.json
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\bin\Debug\net9.0\OrionPOS.Domain.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\bin\Debug\net9.0\OrionPOS.Domain.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.AssemblyInfoInputs.cache
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.AssemblyInfo.cs
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\refint\OrionPOS.Domain.dll
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\OrionPOS.Domain.pdb
+C:\Users\Vivi\Desktop\Uni Systems\OrionPOS-backendC#\OrionPOS.Domain\obj\Debug\net9.0\ref\OrionPOS.Domain.dll

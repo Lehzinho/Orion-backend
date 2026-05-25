@@ -1,0 +1,241 @@
+{
+  "main": {
+    "id": "ad0be91c1f301b6d",
+    "type": "split",
+    "children": [
+      {
+        "id": "4307272a9e3f99c6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "243771834cc354c8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Orion-ERP.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Orion-ERP"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "46b736e1d90df2bc",
+    "type": "split",
+    "children": [
+      {
+        "id": "d67885366f28b99b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fc68851edf6f5926",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "f5b462bdd93453f4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:dominio",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "09977e4a7bd4b376",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "30a70bba3c0a11a5",
+    "type": "split",
+    "children": [
+      {
+        "id": "69f6ee47a56c95d5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6c917aa056fb3630",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Research/Orion-ERP/Orion-ERP.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Orion-ERP"
+            }
+          },
+          {
+            "id": "86deba9af5365c63",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Research/Orion-ERP/Orion-ERP.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Orion-ERP"
+            }
+          },
+          {
+            "id": "ca1e98340c8efe15",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7442aa8c039ae2f5",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "1f7725a3b082051b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Claude Instructions.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Claude Instructions"
+            }
+          },
+          {
+            "id": "cb50eb111eb25b8c",
+            "type": "leaf",
+            "state": {
+              "type": "mermaid-toolbar-view",
+              "state": {},
+              "icon": "trident-custom",
+              "title": "Mermaid Toolbar"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian42-brat:BRAT": false,
+      "claude-code-mcp:Toggle Claude Terminal": false,
+      "mermaid-tools:Open Mermaid Toolbar": false,
+      "obsidian-shellcommands:Shell commands: Custom variables": false
+    }
+  },
+  "active": "243771834cc354c8",
+  "lastOpenFiles": [
+    "Orion-ERP.md",
+    "Research/Orion-ERP/produtos/produto_restaurante.md",
+    "README.md",
+    "Módulos/CQRS e MediatR.md",
+    "Módulos/ValidationBehavior.md",
+    "Módulos/Exception Handling.md",
+    "Módulos/Arquitetura Geral.md",
+    "Módulos/Módulo Departamento.md",
+    "Módulos/Módulo Almoxarifado.md",
+    "Módulos/Módulo Centro de Custo.md",
+    "CLAUDE.md",
+    "2026-04-14.md",
+    "Research/Orion-ERP/estoque/estoque_nfe_spec.md",
+    "Research/Orion-ERP/pedidos-vendas/nota_fiscal.md",
+    "claude/system-prompt.md",
+    "claude/decisions.md",
+    "claude/rules/implementation-rules.md",
+    "claude/context/patterns.md",
+    "claude/context/multi-tenancy.md",
+    "claude/context/architecture.md",
+    "claude/agents/testing-agent.md",
+    "claude/agents/obisidian-agent.md",
+    "claude/agents/efcore-agent.md",
+    "claude/agents/cqrs-agent.md",
+    "Research/Orion-ERP/movimentos-caixas-turnos/movimento_caixa_modelo_dados.md",
+    "Orion-ERP.md.tmp.70469.1775737868375",
+    "Orion-ERP.md.tmp.70469.1775737863974",
+    "Orion-ERP.md.tmp.70469.1775737846989",
+    "Módulos/Módulo Movimento Turno Caixa.md",
+    "Módulos/Módulo Movimento Turno Caixa.md.tmp.70469.1775737839812",
+    "Orion-ERP.md.tmp.70469.1775737792768",
+    "Orion-ERP.md.tmp.70469.1775737779186",
+    "Orion-ERP.md.tmp.6505.1775505035558",
+    "Orion-ERP.md.tmp.6505.1775505026182",
+    "Research/Orion-ERP/pedidos-vendas/comanda.md.tmp.6505.1775505002742",
+    "Research/Orion-ERP/pedidos-vendas/nota_fiscal.md.tmp.6505.1775504971923",
+    "Untitled.canvas"
+  ]
+}

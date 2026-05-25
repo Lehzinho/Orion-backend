@@ -1,0 +1,326 @@
+---
+title: Domínio de Pedidos, Vendas e Notas Fiscais — OrionERP
+type: domain-spec
+project: OrionERP
+tags: [orionerp, pedido, venda, nfe, nfce, nfse, fiscal, caixa, pagamento]
+updated: 2026-04-06
+---
+
+← [[Orion-ERP|🏗️ Orion-ERP — Arquitetura]] | [[README|🏠 Projeto]]
+
+---
+
+# Especificação do Domínio — Pedidos, Vendas e Notas Fiscais
+
+---
+
+## Princípios Gerais do Modelo
+
+1. **Pedido ≠ Venda** — Pedido representa intenção de consumo; Venda representa transação comercial recebida.
+
+2. **Pedido não gera lançamento de caixa** — apenas Vendas finalizadas e recebidas geram `CaixaLancamento`.
+
+3. **Venda agrupa Pedidos** — relação N:N via `VendaPedido`. MVP é 1:1 (balcão); Fase 2 suporta N Pedidos por Venda via Comanda.
+
+4. **NF-e nasce da Venda, não do Pedido** — a nota fiscal é emitida sobre a transação comercial, não sobre o lançamento operacional.
+
+5. **Uma Venda pode gerar múltiplas notas** — NFC-e para produtos (PRODUCT) e NFS-e para serviços (SERVICE) emitidas separadamente quando presentes na mesma Venda.
+
+6. **Múltiplas Vendas podem compor uma NF-e** — agrupamento de vendas em nota única (ex: faturamento de conta corrente).
+
+7. **ProdutoFiscal isolado de Produto** — dados fiscais (NCM, CFOP, CST) ficam em entidade separada para suportar mudanças de legislação estadual sem afetar o modelo comercial.
+
+8. **EmpresaFiscal isolado de Empresa** — dados fiscais da empresa emissora (regime tributário, série, inscrição estadual) ficam separados.
+
+9. **PontoEntrega é nullable no Pedido** — balcão não exige mesa. Fase 2 torna obrigatório para pedidos de restaurante.
+
+10. **ComandaId é nullable no Pedido** — Fase 2 adiciona FK nullable. Pedidos de balcão ficam com `null`. Sem breaking change.
+
+11. **precoUnitario em PedidoItem é snapshot imutável** — garante que alterações futuras de preço não afetam pedidos já lançados.
+
+12. **Dados financeiros são imutáveis** — `CaixaLancamento`, `CaixaPagamento` e `CaixaTurnoFechamento` não podem ser deletados ou alterados após criação.
+
+---
+
+## Distinção Pedido vs Venda
+
+| Aspecto | Pedido | Venda |
+|---|---|---|
+| Quando nasce | Ao lançar itens no PDV | Ao receber o pagamento |
+| O que representa | Intenção de consumo | Transação comercial |
+| Gera ticket cozinha | ✅ (query por GrupoPreparo) | ❌ |
+| Gera lançamento de caixa | ❌ | ✅ via CaixaLancamento |
+| Gera Nota Fiscal | ❌ | ✅ Fase 2 |
+| Status | ABERTO → CANCELADO / ENTREGUE | PENDENTE → FINALIZADA / CANCELADA |
+| Vínculo financeiro | Turno (operacional) | Movimento + Turno (financeiro) |
+
+---
+
+## Domínios e Tabelas
+
+### 1. Pedido
+
+- **pedidos**
+  - empresa_id (EmpresaScoped)
+  - turno_id → Turno
+  - comanda_id → Comanda (nullable — Fase 2)
+  - ponto_entrega_id → PontoEntrega (nullable — obrigatório apenas na Fase 2 para mesas)
+  - status: `ABERTO` | `CANCELADO` | `ENTREGUE`
+  - observacao (nullable)
+
+- **pedido_itens**
+  - pedido_id → Pedido
+  - produto_variant_id → ProdutoVariant
+  - quantidade (decimal)
+  - preco_unitario (decimal — **snapshot imutável** do momento do lançamento)
+  - observacao (nullable)
+
+Regra: apenas Pedidos com status `ABERTO` aceitam adição/remoção de itens.
+
+---
+
+### 2. Venda
+
+- **vendas**
+  - empresa_id (EmpresaScoped)
+  - movimento_id → Movimento
+  - turno_id → Turno
+  - valor_total (decimal)
+  - status: `PENDENTE` | `FINALIZADA` | `CANCELADA`
+  - data_hora (DateTime)
+
+- **venda_pedidos** *(junction N:N)*
+  - venda_id → Venda
+  - pedido_id → Pedido
+
+Regra: uma Venda só é FINALIZADA após `CaixaLancamento` criado com pagamentos que fecham o `valor_total`.
+
+---
+
+### 3. Caixa
+
+- **caixa_lancamentos**
+  - empresa_id (EmpresaScoped)
+  - movimento_id → Movimento
+  - turno_id → Turno
+  - tipo: `VENDA` | `SANGRIA` | `SUPRIMENTO` *(MVP usa só VENDA)*
+  - valor_total (decimal)
+  - data_hora (DateTime)
+
+- **caixa_pagamentos**
+  - caixa_lancamento_id → CaixaLancamento
+  - tipo_pagamento: `DINHEIRO` | `CARTAO_CREDITO` | `CARTAO_DEBITO` | `PIX` | `CARTAO_INTERNO` | `OUTROS`
+  - valor (decimal)
+
+Regra: `SUM(caixa_pagamentos.valor) == caixa_lancamentos.valor_total`  
+Regra: múltiplos pagamentos permitidos por lançamento (split de formas de pagamento).  
+Regra: dados de caixa são **imutáveis** após criação.
+
+---
+
+### 4. Fiscal — Shells Phase 1
+
+> Entidades criadas na Fase 1 como shell (campos nullable). Preenchidas quando emissão for implementada na Fase 2+.
+
+- **produto_fiscal** *(1:1 com Produto)*
+  - produto_id → Produto (unique)
+  - ncm (string 8 dígitos, nullable)
+  - cest (nullable)
+  - cfop (nullable)
+  - cst_csosn (nullable)
+  - origem: `0`=nacional | `1`=estrangeira (nullable)
+  - codigo_servico_lc116 (nullable — NFS-e quando TipoProduto=SERVICE)
+  - aliquota_iss (decimal nullable — NFS-e)
+
+  Criada automaticamente junto com o `Produto` (shell vazia). Isolada de `Produto` para suportar mudanças de legislação estadual (tributação por NCM/UF) sem afetar modelo comercial.
+
+- **empresa_fiscal** *(1:1 com Empresa)*
+  - empresa_id → Empresa (unique)
+  - regime_tributario: `SIMPLES_NACIONAL` | `LUCRO_PRESUMIDO` | `LUCRO_REAL` (nullable)
+  - inscricao_estadual (nullable)
+  - inscricao_municipal (nullable)
+  - serie_nfce (int nullable)
+  - numero_nfce_atual (int nullable)
+  - serie_nfse (int nullable)
+  - numero_nfse_atual (int nullable)
+  - certificado_path (nullable)
+  - ambiente: `HOMOLOGACAO` | `PRODUCAO` (nullable)
+
+  Criada automaticamente junto com a `Empresa`. Configurada pelo operador antes de habilitar emissão.
+
+---
+
+### 5. Notas Fiscais — Fase 2
+
+> Não implementadas no MVP. Adição aditiva — sem breaking change nas entidades existentes.
+
+- **notas_fiscais**
+  - empresa_id (EmpresaScoped)
+  - tipo: `NFCE` | `NFSE`
+  - numero, serie, chave_acesso
+  - status: `PENDENTE` | `AUTORIZADA` | `CANCELADA` | `DENEGADA`
+  - data_emissao (DateTime nullable)
+  - valor_total (decimal)
+  - xml (text nullable — preenchido após autorização SEFAZ)
+
+- **venda_notas_fiscais** *(junction N:N)*
+  - venda_id → Venda
+  - nota_fiscal_id → NotaFiscal
+
+- **nota_fiscal_itens**
+  - nota_fiscal_id → NotaFiscal
+  - pedido_item_id → PedidoItem *(referência de origem)*
+  - descricao (snapshot)
+  - quantidade, valor_unitario, valor_total (snapshot)
+  - ncm, cfop, cst_csosn, origem (snapshot fiscal no momento da emissão)
+  - codigo_servico_lc116, aliquota_iss (snapshot — NFS-e)
+
+- **regras_fiscal_ncm** *(lookup — Fase 2+)*
+  - ncm, uf_destino
+  - cst, cfop, aliquota_icms, aliquota_reducao_bc
+  - modalidade_bc, motivo_desoneracao
+  - vigencia_inicio, vigencia_fim
+  
+  Tabela de regras tributárias por NCM/UF. Atualizada conforme legislação estadual.
+
+---
+
+### 6. Comanda — Fase 2
+
+- **comandas**
+  - empresa_id (EmpresaScoped)
+  - ponto_entrega_id → PontoEntrega
+  - turno_id → Turno
+  - status: `ABERTA` | `FECHADA`
+  - aberta_em, fechada_em
+
+Relação com Pedido: `pedidos.comanda_id` FK nullable adicionada na migration da Fase 2.  
+Pedidos de balcão (sem comanda) permanecem com `comanda_id = NULL` — sem breaking change.
+
+---
+
+## Enums
+
+```
+StatusPedido:    ABERTO | CANCELADO | ENTREGUE
+StatusVenda:     PENDENTE | FINALIZADA | CANCELADA
+StatusComanda:   ABERTA | FECHADA  (Fase 2)
+TipoLancamento:  VENDA | SANGRIA | SUPRIMENTO
+TipoPagamento:   DINHEIRO | CARTAO_CREDITO | CARTAO_DEBITO | PIX | CARTAO_INTERNO | OUTROS
+TipoNota:        NFCE | NFSE  (Fase 2)
+StatusNota:      PENDENTE | AUTORIZADA | CANCELADA | DENEGADA  (Fase 2)
+RegimeTributario: SIMPLES_NACIONAL | LUCRO_PRESUMIDO | LUCRO_REAL
+AmbienteFiscal:  HOMOLOGACAO | PRODUCAO
+```
+
+---
+
+## Escopo Multi-Tenant
+
+| Entidade | EmpresaScoped | Global | Observação |
+|---|---|---|---|
+| Pedido | ✅ | ❌ | |
+| PedidoItem | ✅ | ❌ | |
+| Venda | ✅ | ❌ | |
+| VendaPedido | ✅ | ❌ | Junction — segue escopo da Venda |
+| CaixaLancamento | ✅ | ❌ | |
+| CaixaPagamento | ✅ | ❌ | |
+| ProdutoFiscal | ✅ | ❌ | 1:1 com Produto |
+| EmpresaFiscal | ✅ | ❌ | 1:1 com Empresa |
+| NotaFiscal | ✅ | ❌ | Fase 2 |
+| VendaNotaFiscal | ✅ | ❌ | Fase 2 |
+| NotaFiscalItem | ✅ | ❌ | Fase 2 |
+| RegraFiscalNCM | ❌ | ✅ | Fase 2 — lookup global |
+| Comanda | ✅ | ❌ | Fase 2 |
+
+---
+
+## Regras de Negócio
+
+### Pedido
+- Requer Turno com status `OPEN`
+- Itens só podem ser adicionados/removidos em Pedido `ABERTO`
+- `precoUnitario` em `PedidoItem` é snapshot — imutável após lançamento
+- Cancelamento só permitido em Pedido `ABERTO`
+
+### Venda
+- Valor total deve coincidir com soma dos `PedidoItem.precoUnitario × quantidade` dos Pedidos incluídos
+- `SUM(CaixaPagamento.valor) == CaixaLancamento.valorTotal`
+- Venda `FINALIZADA` não pode ser alterada
+- Cancelamento de Venda não cancela automaticamente os Pedidos
+
+### Caixa
+- Todo lançamento deve estar vinculado a Turno `OPEN`
+- Dados financeiros (`CaixaLancamento`, `CaixaPagamento`) são imutáveis após criação
+- `CaixaTurnoFechamento` é imutável e único por Turno
+
+### Fiscal
+- `ProdutoFiscal` criada automaticamente com o `Produto` (shell com campos nullable)
+- `EmpresaFiscal` criada automaticamente com a `Empresa` (shell com campos nullable)
+- Emissão de NF-e requer `EmpresaFiscal` e `ProdutoFiscal` completamente preenchidos
+- `NotaFiscalItem` é snapshot completo — independente de alterações futuras em `Produto` ou `ProdutoFiscal`
+- NFC-e → produtos com `TipoProduto = PRODUCT`; NFS-e → `TipoProduto = SERVICE`
+
+---
+
+## Fluxo Típico — Balcão MVP (Phase 1)
+
+```
+1. AbrirMovimento (empresa) ──── se não existir OPEN hoje
+2. AbrirTurno (PDV + operador + fundo_caixa) ──── requer Movimento OPEN
+3. CriarPedido ──── requer Turno OPEN
+4. AdicionarItens (produto_variant + quantidade)
+       ↓ precoUnitario snapshot capturado aqui
+5. [ticket produção gerado por query: PedidoItens ABERTOS por GrupoPreparo]
+6. FinalizarVenda (pedidoId, pagamentos[])
+       ↓ cria Venda + VendaPedido
+       ↓ cria CaixaLancamento (tipo=VENDA)
+       ↓ cria CaixaPagamento[] (valida soma = total)
+       ↓ atualiza Pedido.status = ENTREGUE
+       ↓ atualiza Venda.status = FINALIZADA
+7. FecharTurno ──── cria CaixaTurnoFechamento
+8. FecharMovimento ──── requer todos os Turnos fechados
+```
+
+---
+
+## Fluxo Típico — Restaurante (Phase 2)
+
+```
+1. Movimento + Turno abertos
+2. CriarComanda (PontoEntrega = mesa)
+3. CriarPedido (comanda_id preenchido) → AdicionarItens
+4. [múltiplos Pedidos por Comanda ao longo do serviço]
+5. FecharComanda → FinalizarVenda (N Pedidos → 1 Venda)
+       ↓ VendaPedido: 1 Venda ← N Pedidos
+6. Receber pagamento → CaixaLancamento + CaixaPagamento(s)
+7. [Fase 2+] EmitirNotaFiscal ←── Venda
+       ↓ split: NFC-e (itens PRODUCT) + NFS-e (itens SERVICE)
+       ↓ VendaNotaFiscal M:N
+```
+
+---
+
+## O que fica para Fase 2+
+
+| Item | Motivo |
+|---|---|
+| Comanda | Agrupamento de Pedidos — `Pedido.ComandaId` nullable, sem breaking change |
+| PontoEntrega obrigatório | Nullable desde Phase 1 — sem breaking change |
+| NotaFiscal + VendaNotaFiscal + NotaFiscalItem | Adição aditiva — não altera Venda |
+| Integração SEFAZ / emissor fiscal | Requer `EmpresaFiscal` + `ProdutoFiscal` preenchidos |
+| RegraFiscalNCM | Lookup de tributação por NCM/UF/estado |
+| Sangria / Suprimento | `TipoLancamento` já tem os valores no enum |
+| Cartões Internos | `TipoPagamento.CARTAO_INTERNO` já registrado no MVP |
+| KDS com confirmação de preparo | Ticket de produção é query simples no MVP |
+
+---
+
+## 🔗 Ver Também
+
+- [[movimento_turno_caixa|💰 Módulo Movimento / Turno / Caixa]] — Movimento, Turno e estrutura de caixa
+- [[produto_restaurante|🍽️ Domínio de Produtos]] — Produtos, variantes, preços e cardápio
+- [[Módulo PDV]] — Ponto de venda
+- [[Módulo Grupo de Preparo]] — Agrupamentos de produção (ticket cozinha)
+- [[Módulo Ponto de Entrega]] — Mesas e locais de entrega
+- [[Orion-ERP|🏗️ Arquitetura Geral]]

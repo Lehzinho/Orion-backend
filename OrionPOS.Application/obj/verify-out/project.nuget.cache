@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "1NmO54L59o4=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Vivi\\Desktop\\Uni Systems\\OrionPOS-backendC#\\OrionPOS.Application\\OrionPOS.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Vivi\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.9\\microsoft.extensions.dependencyinjection.abstractions.9.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}

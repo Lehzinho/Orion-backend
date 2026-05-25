@@ -1,0 +1,6 @@
+@OrionPOS.Api_HostAddress = http://192.168.1.105:5003
+
+GET {{OrionPOS.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
